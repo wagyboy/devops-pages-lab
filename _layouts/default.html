@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <meta name="description" content="{{ site.description }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <span>Zhi-An Chen</span>
+        <svg class="swoosh" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 14 C 50 4, 120 4, 198 12"/></svg>
+      </a>
+      <a class="pill" href="{{ site.github.repository_url }}">View on GitHub</a>
+    </header>
+
+    <section class="hero">
+      <div class="avatar">
+        <span class="blob"></span>
+        <img src="https://github.com/{{ site.github.owner_name }}.png?size=240" alt="GitHub avatar of {{ site.github.owner_name }}">
+      </div>
+      <div class="intro">
+        <h1>Hey, I'm <span class="marked">Zhi-An<svg class="swoosh" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 14 C 50 4, 120 4, 198 12"/></svg></span> <span class="wave">👋</span></h1>
+        <p>A DevOps student. This page shows what I'm building on GitHub, refreshed <strong>automatically every 6 hours</strong> by GitHub Actions.</p>
+      </div>
+    </section>
+  </div>
+
+  <main class="card">
+    {{ content }}
+  </main>
+
+  <footer class="footer">
+    Built with GitHub Actions + GitHub Pages · Site rebuilt {{ site.time | date: "%Y-%m-%d %H:%M UTC" }}
+  </footer>
+</body>
+</html>
