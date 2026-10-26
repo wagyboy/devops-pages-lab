@@ -1,0 +1,127 @@
+---
+---
+
+// Warm, editorial look inspired by personal "creator" sites:
+// cream canvas, ink text, serif display headings, coral and yellow accents.
+
+$cream: #f6f3ee;
+$panel: #efeae2;
+$ink: #1b1624;
+$muted: #5e5868;
+$coral: #fd976d;
+$yellow: #ffd86b;
+$blue: #5aa9e6;
+$line: #e7e1d8;
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: $cream;
+  color: $ink;
+  font: 500 17px/1.65 "DM Sans", system-ui, sans-serif;
+}
+
+a { color: $ink; text-decoration-color: $coral; text-underline-offset: 3px; }
+a:hover { color: darken($coral, 18%); }
+
+h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 700; line-height: 1.15; }
+
+.swoosh { display: block; width: 100%; height: 12px; }
+.swoosh path { fill: none; stroke: $blue; stroke-width: 4; stroke-linecap: round; }
+
+// ---------- top panel ----------
+.shell {
+  max-width: 1040px;
+  margin: 16px auto 0;
+  padding: 24px 40px 56px;
+  background: $panel;
+  border-radius: 28px;
+}
+
+.topbar { display: flex; align-items: center; justify-content: space-between; }
+.brand { text-decoration: none; font-family: "Fraunces", Georgia, serif; font-size: 26px; font-weight: 700; }
+.brand .swoosh { margin-top: -4px; }
+
+.pill {
+  background: $coral;
+  border-radius: 999px;
+  padding: 10px 22px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: transform .15s ease;
+}
+.pill:hover { color: $ink; transform: translateY(-2px); }
+
+.hero { display: flex; align-items: center; gap: 48px; margin-top: 40px; }
+
+.avatar { position: relative; flex: 0 0 220px; height: 220px; }
+.avatar .blob {
+  position: absolute; inset: 10px -10px -6px 4px;
+  background: $yellow;
+  border-radius: 58% 42% 55% 45% / 50% 60% 40% 50%;
+}
+.avatar img {
+  position: relative;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  object-fit: cover;
+}
+
+.intro h1 { font-size: clamp(36px, 5vw, 56px); margin: 0 0 14px; }
+.intro p { font-size: 21px; margin: 0; max-width: 34ch; }
+.marked { position: relative; display: inline-block; }
+.marked .swoosh { position: absolute; left: 0; right: 0; bottom: -6px; }
+.wave { display: inline-block; transform-origin: 70% 70%; animation: wave 2.4s ease-in-out 1; }
+@keyframes wave { 0%, 60%, 100% { transform: rotate(0); } 15%, 45% { transform: rotate(14deg); } 30% { transform: rotate(-8deg); } }
+
+// ---------- content card ----------
+.card {
+  max-width: 880px;
+  margin: -32px auto 0;
+  position: relative;
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px;
+  box-shadow: 0 10px 30px rgba(27, 22, 36, .06);
+}
+.card { overflow-wrap: anywhere; }
+.card > h1:first-child { font-size: 34px; margin-top: 0; }
+.card h2 { font-size: 26px; margin: 40px 0 12px; }
+.card code { background: $cream; border-radius: 6px; padding: 1px 6px; font-size: .88em; }
+
+// The auto-generated activity list becomes a timeline of rows.
+#recent-github-activity + ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid $line;
+  border-radius: 16px;
+  overflow: hidden;
+}
+#recent-github-activity + ol li {
+  padding: 12px 18px;
+  border-bottom: 1px solid $line;
+}
+#recent-github-activity + ol li:last-child { border-bottom: 0; }
+#recent-github-activity + ol li:nth-child(odd) { background: lighten($cream, 1.5%); }
+#recent-github-activity + ol li a { font-weight: 700; }
+
+.card table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.card th, .card td { text-align: left; padding: 8px 10px; border-bottom: 1px solid $line; vertical-align: top; }
+.card th { color: $muted; font-weight: 700; }
+
+.footer { text-align: center; color: $muted; font-size: 14px; padding: 32px 16px 48px; }
+
+// ---------- small screens ----------
+@media (max-width: 720px) {
+  .shell { margin: 0; border-radius: 0 0 24px 24px; padding: 18px 18px 48px; }
+  .hero { flex-direction: column; text-align: center; gap: 24px; }
+  .intro p { margin: 0 auto; }
+  .card { margin: -24px 12px 0; padding: 28px 20px; }
+  .topbar { gap: 12px; }
+  .brand { font-size: 22px; }
+  .pill { padding: 8px 14px; font-size: 14px; white-space: nowrap; }
+  .card table { display: block; overflow-x: auto; }
+}
