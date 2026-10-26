@@ -56,5 +56,7 @@ The workflow runs at minute 17 every 6 hours (`17 */6 * * *`, UTC), plus manual 
 - `index.md`: the homepage; it includes this README
 - `README.md`: page content plus the auto-updated activity section
 - `_config.yml`: site title, description and theme
+- `_layouts/default.html`: custom page layout (hero panel, content card, footer)
+- `assets/css/style.scss`: custom styles (colors, fonts, activity timeline, mobile layout)
 - `.github/workflows/activity-log.yml`: the scheduled update workflow
 - `.gitignore`: keeps local Jekyll build output out of the repository
