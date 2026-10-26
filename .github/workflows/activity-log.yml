@@ -1,0 +1,39 @@
+name: Update Activity Log
+
+on:
+  schedule:
+    # Every 6 hours at minute 17 (UTC). See README "Schedule rationale".
+    - cron: "17 */6 * * *"
+  workflow_dispatch: # allow a manual run from the Actions tab
+
+permissions:
+  contents: write # only what is needed to commit README.md
+
+concurrency:
+  group: activity-log
+  cancel-in-progress: false # never run two updates at once
+
+jobs:
+  update-activity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update GitHub Activity
+        uses: TheDanniCraft/activity-log@v1
+        with:
+          GITHUB_USERNAME: "wagyboy"
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          EVENT_LIMIT: 15
+          HIDE_DETAILS_ON_PRIVATE_REPOS: true
+          COMMIT_MESSAGE: "docs(activity): update README with latest GitHub activity"
+          EVENT_EMOJI_MAP: |
+            PushEvent: "🚀"
+            CreateEvent: "✨"
+            DeleteEvent: "🗑️"
+            PullRequestEvent: "🔀"
+            IssuesEvent: "📝"
+            WatchEvent: "⭐"
+            ForkEvent: "🍴"
+            ReleaseEvent: "📦"
