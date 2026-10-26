@@ -32,8 +32,14 @@ jobs:
             PushEvent: "🚀"
             CreateEvent: "✨"
             DeleteEvent: "🗑️"
-            PullRequestEvent: "🔀"
-            IssuesEvent: "📝"
-            WatchEvent: "⭐"
             ForkEvent: "🍴"
-            ReleaseEvent: "📦"
+            WatchEvent: "⭐"
+            PullRequestEvent:
+              opened: "🔀"
+              merged: "🎉"
+              closed: "❌"
+            IssuesEvent:
+              opened: "📝"
+              closed: "✅"
+            ReleaseEvent:
+              published: "📦"
