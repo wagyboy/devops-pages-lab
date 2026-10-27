@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # allow a manual run from the Actions tab
 
 permissions:
-  contents: write # only what is needed to commit README.md
+  contents: read # the action commits through the API with the PAT (secrets.TOKEN), so GITHUB_TOKEN never writes
 
 concurrency:
   group: activity-log
