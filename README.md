@@ -30,7 +30,18 @@ Live site: https://wagyboy.github.io/devops-pages-lab/
 
 1. A scheduled workflow (`.github/workflows/activity-log.yml`) runs the `TheDanniCraft/activity-log` action.
 2. The action reads my recent GitHub events and rewrites the lines between the two markers above, then commits the new `README.md`.
-3. GitHub Pages rebuilds the site. `index.md` includes this README, so the homepage always shows the latest activity.
+3. That commit triggers the release workflow (`.github/workflows/pages.yml`), which builds the site with Jekyll. `index.md` includes this README, so the homepage always shows the latest activity.
+4. A release gate checks the build before anything goes live: the activity markers are present, every page has a doctype, a language and a title, no raw Liquid leaked into the output, and every internal link and asset exists. If any check fails, the site is not deployed and the previous version stays online.
+5. After the deploy, a smoke test fetches `version.txt` from the live site and fails unless it matches the commit that was just built.
+
+## Release safety
+
+| Stage | What it does | What it protects against |
+| --- | --- | --- |
+| Build | Jekyll builds the site and stamps the commit SHA into `version.txt` | Knowing exactly which version is live |
+| Gate | `.github/scripts/check_site.py` validates the built site | Broken links, missing activity section, template errors reaching visitors |
+| Deploy | Runs only if the gate passed; pull requests run the gate but never deploy | Unchecked changes going live |
+| Smoke test | Live `version.txt` must equal the built commit | A deploy that "succeeded" but is not actually being served |
 
 ## Configuration
 
@@ -59,4 +70,6 @@ The workflow runs at minute 17 every 6 hours (`17 */6 * * *`, UTC), plus manual 
 - `_layouts/default.html`: custom page layout (hero panel, content card, footer)
 - `assets/css/style.scss`: custom styles (colors, fonts, activity timeline, mobile layout)
 - `.github/workflows/activity-log.yml`: the scheduled update workflow
+- `.github/workflows/pages.yml`: the release workflow (build, gate, deploy, smoke test)
+- `.github/scripts/check_site.py`: the release gate's checks
 - `.gitignore`: keeps local Jekyll build output out of the repository

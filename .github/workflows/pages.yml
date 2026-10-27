@@ -1,0 +1,91 @@
+name: Release site
+
+# Low-risk release pipeline: build -> gate -> deploy -> smoke test.
+# The site is deployed only if the gate passes, and a deploy only counts as
+# done once the live site serves the exact version that was built.
+
+on:
+  push:
+    branches: [main] # includes the activity-log bot's README commits (pushed with the PAT)
+  pull_request:
+    branches: [main] # build + gate only, never deploys
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('gate-{0}', github.ref) || 'pages-production' }}
+  cancel-in-progress: false # never cut a production deploy in half
+
+jobs:
+  build:
+    name: Build and gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stamp the build version
+        run: echo "${GITHUB_SHA}" > version.txt
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Gate - markers, HTML basics, internal links
+        run: python3 .github/scripts/check_site.py _site "/${{ github.event.repository.name }}"
+
+      - name: Upload the checked build
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build # runs only if the gate passed
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  smoke-test:
+    name: Smoke test the live site
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SITE_URL: ${{ needs.deploy.outputs.page_url }}
+    steps:
+      - name: Live site must serve this exact version
+        run: |
+          expected="${GITHUB_SHA}"
+          for i in $(seq 1 20); do
+            live=$(curl -fsS "${SITE_URL}version.txt?run=${GITHUB_RUN_ID}-${i}" | tr -d '[:space:]' || true)
+            echo "Attempt ${i}: live=${live:-none} expected=${expected}"
+            [ "${live}" = "${expected}" ] && break
+            sleep 15
+          done
+          if [ "${live}" != "${expected}" ]; then
+            echo "::error title=Smoke test::Live site serves '${live:-nothing}', expected '${expected}'"
+            exit 1
+          fi
+
+      - name: Homepage is up and shows the activity section
+        run: |
+          curl -fsS "${SITE_URL}?run=${GITHUB_RUN_ID}" -o home.html
+          grep -q 'START_SECTION:activity' home.html
+          echo "Smoke test passed: ${SITE_URL} serves ${GITHUB_SHA}"
