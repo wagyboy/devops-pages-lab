@@ -2,7 +2,7 @@
 
 Owner: 陳致安 (B11309058) · Course: DevOps
 
-Live site: https://wagyboy.github.io/devops-pages-lab/ · [Release notes](release-notes.html)
+Live site: https://wagyboy.github.io/devops-pages-lab/
 
 ## Recent GitHub Activity
 
